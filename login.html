@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login through Application Number and Date of Birth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+
+    .captcha-container {
+      display: flex;
+      align-items: center;
+    }
+
+    #captcha {
+      font-family: monospace;
+      font-size: 18px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      flex-grow: 1;
+    }
+
+    #regenerate {
+      margin-left: 10px;
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      width: 100%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Login through Application Number and Date of Birth</h1>
+    <form id="login-form">
+      <label for="application-number">Application Number</label>
+      <input type="text" id="application-number" placeholder="Enter application number">
+
+      <label for="date-of-birth">Date of Birth</label>
+      <div class="dob-container">
+        <select id="day">
+          <option value="">Day</option>
+          <!-- Add all days here -->
+        </select>
+        <select id="month">
+          <option value="">Month</option>
+          <!-- Add all months here -->
+        </select>
+        <select id="year">
+          <option value="">Year</option>
+          <!-- Add all years here -->
+        </select>
+      </div>
+
+      <label for="security-pin">Security PIN</label>
+      <input type="text" id="security-pin" placeholder="Enter security PIN">
+
+      <div class="captcha-container">
+        <div id="captcha"></div>
+        <button type="button" id="regenerate">Regenerate</button>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+
+    <div id="download-link-container"></div>
+  </div>
+
+  <script>
+    // Populate the days, months, and years
+    var daySelect = document.getElementById("day");
+    for (var i = 1; i <= 31; i++) {
+      var option = document.createElement("option");
+      option.text = i;
+      daySelect.add(option);
+    }
+
+    var monthSelect = document.getElementById("month");
+    var months = [
+      "January", "February", "March", "April", "May", "June", "July",
+      "August", "September", "October", "November", "December"
+    ];
+    for (var i = 0; i < months.length; i++) {
+      var option = document.createElement("option");
+      option.text = months[i];
+      monthSelect.add(option);
+    }
+
+    var yearSelect = document.getElementById("year");
+    var currentYear = new Date().getFullYear();
+    for (var i = currentYear; i >= currentYear - 100; i--) {
+      var option = document.createElement("option");
+      option.text = i;
+      yearSelect.add(option);
+    }
+
+    // Generate a random alphanumeric captcha
+    function generateCaptcha() {
+      var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var captcha = "";
+      for (var i = 0; i < 6; i++) {
+        captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return captcha;
+    }
+
+    var captchaElement = document.getElementById("captcha");
+    var regenerateButton = document.getElementById("regenerate");
+
+    // Initial captcha generation
+    regenerateButton.addEventListener("click", function() {
+      captchaElement.textContent = generateCaptcha();
+    });
+
+    // Form submission
+    var loginForm = document.getElementById("login-form");
+    loginForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      // Get the form values
+      var applicationNumber = document.getElementById("application-number").value;
+      var day = document.getElementById("day").value;
+      var month = document.getElementById("month").value;
+      var year = document.getElementById("year").value;
+      var securityPin = document.getElementById("security-pin").value;
+      var captcha = captchaElement.textContent;
+
+      // Perform validation and submission logic here
+      if (applicationNumber === "233510318007" &&
+          day === "14" &&
+          month === "October" &&
+          year === "2005" &&
+          securityPin === captcha) {
+        // Construct the Google Drive download link
+        var fileId = "1rp3UEC_61SCFWVGzaVQwUROXGyDkSHRm";
+        var downloadLink = "https://drive.google.com/uc?id=" + fileId;
+
+        // Create the download link element and trigger the download
+        var linkContainer = document.getElementById("download-link-container");
+        var downloadLinkElement = document.createElement("a");
+        downloadLinkElement.href = downloadLink;
+        downloadLinkElement.setAttribute("download", "image.jpg");
+        downloadLinkElement.style.display = "none"; // Hide the link element
+        linkContainer.appendChild(downloadLinkElement);
+        downloadLinkElement.click();
+        linkContainer.removeChild(downloadLinkElement);
+
+        // Clear the form
+        loginForm.reset();
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    });
+
+    // Initial captcha generation
+    regenerateButton.click();
+  </script>
+</body>
+</html>
